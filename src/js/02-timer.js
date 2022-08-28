@@ -31,7 +31,6 @@ let timerId = null;
 function onStartBtnClick() {
 
     timerId = setInterval(() => {
-    // console.log('start');
 
     const newData = new Date(); 
     const finalData = new Date(datetimeInput.value);
@@ -41,9 +40,6 @@ function onStartBtnClick() {
         clearInterval(timerId);
       }
 
-    // addLeadingZero(value)
-    // console.log(result.days, result.hours, result.minutes, result.seconds);
-    // console.log(Object.values(result))
     document.querySelector('[data-days]').textContent = addLeadingZero(result.days);
     document.querySelector('[data-hours]').textContent = addLeadingZero(result.hours);
     document.querySelector('[data-minutes]').textContent = addLeadingZero(result.minutes);
