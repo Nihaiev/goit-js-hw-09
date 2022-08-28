@@ -15,7 +15,6 @@ function getRandomHexColor() {
 
 function changeBgColor() {
     intervalId = setInterval(() => {
-        console.log('Меняем фон');
          document.body.style.background = getRandomHexColor();
       }, DELAY);
 
