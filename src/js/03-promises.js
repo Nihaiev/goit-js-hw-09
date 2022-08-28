@@ -6,26 +6,26 @@ form.addEventListener('submit', onSubmitClick);
 
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
-const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        resolve({position, delay});
+        resolve({ position, delay });
       } else {
-        reject({position, delay});
+        reject({ position, delay });
       }
     }, delay);
   });
   promise
-  .then(logSuccess)
-  .catch(logError)
-  .finally(() => console.log('promise буде виконаний в будь якому випадку'));
-};
+    .then(logSuccess)
+    .catch(logError)
+    .finally(() => console.log('promise буде виконаний в будь якому випадку'));
+}
 
-const logSuccess = ({position, delay}) => {
+const logSuccess = ({ position, delay }) => {
   Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
 };
 
-const logError = ({position, delay}) => {
+const logError = ({ position, delay }) => {
   Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
 };
 
@@ -38,8 +38,8 @@ function onSubmitClick(event) {
   let firstDelayValue = Number(firstDelay.value);
 
   for (let i = 1; i <= Number(amount.value); i++) {
-    createPromise(i, firstDelayValue)
+    createPromise(i, firstDelayValue);
     firstDelayValue += Number(delayStep.value);
   }
-    form.reset();
-};
+  form.reset();
+}

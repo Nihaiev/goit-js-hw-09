@@ -10,18 +10,18 @@ startBtn.addEventListener('click', changeBgColor);
 stopBtn.addEventListener('click', stopchangeBgColor);
 
 function getRandomHexColor() {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  }
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
 
 function changeBgColor() {
-    intervalId = setInterval(() => {
-         document.body.style.background = getRandomHexColor();
-      }, DELAY);
+  intervalId = setInterval(() => {
+    document.body.style.background = getRandomHexColor();
+  }, DELAY);
 
-      startBtn.setAttribute("disabled", true);
+  startBtn.setAttribute('disabled', true);
 }
 
 function stopchangeBgColor() {
-    clearInterval(intervalId);
-    startBtn.removeAttribute("disabled");
+  clearInterval(intervalId);
+  startBtn.removeAttribute('disabled');
 }
