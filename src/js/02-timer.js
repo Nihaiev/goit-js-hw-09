@@ -1,10 +1,15 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const datetimeInput = document.querySelector('#datetime-picker');
-const startBtn = document.querySelector('button[data-start');
-startBtn.disabled = true;
+const startBtn = document.querySelector('[data-start]');
+const daysRef = document.querySelector('[data-days]');
+const hoursRef = document.querySelector('[data-hours]');
+const minutesRef = document.querySelector('[data-minutes]');
+const secondsRef = document.querySelector('[data-seconds]');
+let timerId = null;
+
+startBtn.setAttribute('disabled', true);
 
 const options = {
   enableTime: true,
@@ -13,53 +18,57 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < new Date()) {
-      Notiflix.Notify.failure('Please choose a date in the future');
-      startBtn.disabled = true;
+      Notify.failure('Please choose a date in the future');
       return;
     }
-    startBtn.disabled = false;
-    console.log(selectedDates[0]);
+    startBtn.removeAttribute('disabled');
+
+    const showTimer = () => {
+      const now = new Date();
+      localStorage.setItem('selectedData', selectedDates[0]);
+      const selectData = new Date(localStorage.getItem('selectedData'));
+
+      if (!selectData) return;
+
+      const diff = selectData - now;
+      const { days, hours, minutes, seconds } = convertMs(diff);
+      daysRef.textContent = days;
+      hoursRef.textContent = addLeadingZero(hours);
+      minutesRef.textContent = addLeadingZero(minutes);
+      secondsRef.textContent = addLeadingZero(seconds);
+
+      if (
+        daysRef.textContent === '0' &&
+        hoursRef.textContent === '00' &&
+        minutesRef.textContent === '00' &&
+        secondsRef.textContent === '00'
+      ) {
+        clearInterval(timerId);
+      }
+    };
+
+    const onClick = () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+      showTimer();
+      timerId = setInterval(showTimer, 1000);
+    };
+
+    startBtn.addEventListener('click', onClick);
   },
 };
 
-flatpickr(datetimeInput, options);
-
-startBtn.addEventListener('click', onStartBtnClick);
-
-let timerId = null;
-
-function onStartBtnClick() {
-  timerId = setInterval(() => {
-    const newData = new Date();
-    const finalData = new Date(datetimeInput.value);
-    const result = convertMs(finalData - newData);
-
-    if (result <= 0) {
-      clearInterval(timerId);
-    }
-
-    document.querySelector('[data-days]').textContent = addLeadingZero(
-      result.days
-    );
-    document.querySelector('[data-hours]').textContent = addLeadingZero(
-      result.hours
-    );
-    document.querySelector('[data-minutes]').textContent = addLeadingZero(
-      result.minutes
-    );
-    document.querySelector('[data-seconds]').textContent = addLeadingZero(
-      result.seconds
-    );
-  }, 1000);
-
-  datetimeInput.disabled = true;
-  startBtn.disabled = true;
-}
+flatpickr('#datetime-picker', { ...options });
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
 
+/**
+ * Для підрахунку значень використовуй готову функцію convertMs,
+ * де ms - різниця між кінцевою і поточною датою в мілісекундах.
+ */
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
